@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { CategoriesModule } from './categories/categories.module';
+import { ProductsModule } from './products/products.module';
 
 @Module({
   imports: [
@@ -14,11 +15,12 @@ import { CategoriesModule } from './categories/categories.module';
       password: 'almari123',
       database: 'testdb',
       autoLoadEntities: true,
-      synchronize: true,
+      synchronize: false,
     }),
     UsersModule,
     AuthModule,
     CategoriesModule,
+    ProductsModule,
   ],
 })
 export class AppModule {}
