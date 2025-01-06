@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { EcmOrder } from 'src/orders/entities/order.entity';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
 @Entity('ecm_users')
 export class EcmUsers {
@@ -31,4 +32,7 @@ export class EcmUsers {
 
   @Column({ type: 'varchar', length: 15, nullable: true })
   status: string;
+
+  @OneToMany(() => EcmOrder, (ecmOrder) => ecmOrder.ecmUsers)
+  ecmOrder: EcmOrder[];
 }

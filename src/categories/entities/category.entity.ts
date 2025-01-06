@@ -15,9 +15,6 @@ export class EcmCategory {
   @Column({ type: 'varchar', length: 255, nullable: false })
   name: string;
 
-  @Column({ name: 'category_id', type: 'int', nullable: false })
-  category_id: number;
-
   @Column({ type: 'text', nullable: true })
   description?: string;
 

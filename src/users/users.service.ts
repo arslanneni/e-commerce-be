@@ -112,6 +112,37 @@ export class UsersService {
       };
     }
   }
+  async getUserByID(ID: number) {
+    try {
+      const getUsersData = await this.ecmUsersRepo.find({
+        where: {
+          id: ID,
+        } as unknown,
+      });
+      if (getUsersData.length > 0) {
+        return {
+          status: 'SUCCESS',
+          httpcode: HttpStatus.FOUND,
+          message: 'User Details Found',
+          data: getUsersData,
+        };
+      } else {
+        return {
+          status: 'FAILURE',
+          httpcode: HttpStatus.NOT_FOUND,
+          message: 'Users Details Not Found',
+          data: [],
+        };
+      }
+    } catch (err) {
+      return {
+        status: 'FAILURE',
+        httpcode: HttpStatus.EXPECTATION_FAILED,
+        message: 'Exception Occurred',
+        data: [],
+      };
+    }
+  }
   async findUserByEmail(email: string) {
     try {
       const getUsersData = await this.ecmUsersRepo.find({

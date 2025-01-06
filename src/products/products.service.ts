@@ -1,15 +1,29 @@
+/**
+ * ============================================================
+ *                          FILE INFORMATION
+ * ============================================================
+ * Author       : Arslan Ali
+ * Description  : Service to handle Products.
+ * Created Date : 2024-12-31
+ * Last Updated : 2024-12-31
+ * Version      : 1.0.0
+ * ============================================================
+ */
+
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EcmProduct } from './entities/product.entity';
 import { Repository } from 'typeorm';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { CategoriesService } from 'src/categories/categories.service';
 
 @Injectable()
 export class ProductsService {
   constructor(
     @InjectRepository(EcmProduct)
     private readonly ecmProductRepo: Repository<EcmProduct>,
+    private readonly categoriesService: CategoriesService,
   ) {}
 
   async createProduct(createProductDto: CreateProductDto) {
@@ -243,6 +257,101 @@ export class ProductsService {
       }
     } catch (err) {
       console.log(err);
+      return {
+        status: 'FAILURE',
+        httpcode: HttpStatus.EXPECTATION_FAILED,
+        message: 'EXCEPTION OCCURRED',
+        data: [],
+      };
+    }
+  }
+  async getAllProductsByCategory(category: string) {
+    try {
+      const isCategoryExists =
+        await this.categoriesService.getCategoryByName(category);
+
+      if (isCategoryExists.status === 'SUCCESS') {
+        const getProductsResponse = await this.ecmProductRepo.find({
+          where: {
+            category: {
+              name: category,
+            },
+          },
+          relations: ['category'],
+        });
+
+        if (getProductsResponse.length > 0) {
+          return {
+            status: 'SUCCESS',
+            httpcode: HttpStatus.FOUND,
+            message: `Products Found for Category: ${category}`,
+            data: getProductsResponse,
+          };
+        } else {
+          return {
+            status: 'FAILURE',
+            httpcode: HttpStatus.NOT_FOUND,
+            message: `No Products Found for Category: ${category}`,
+            data: [],
+          };
+        }
+      } else {
+        return {
+          status: 'FAILURE',
+          httpcode: HttpStatus.NOT_FOUND,
+          message: 'Category Does Not Exist',
+          data: [],
+        };
+      }
+    } catch (err) {
+      return {
+        status: 'FAILURE',
+        httpcode: HttpStatus.EXPECTATION_FAILED,
+        message: 'EXCEPTION OCCURRED',
+        data: [],
+      };
+    }
+  }
+  async getAllActiveProductsByCategory(category: string) {
+    try {
+      const isCategoryExists =
+        await this.categoriesService.getCategoryByName(category);
+
+      if (isCategoryExists.status === 'SUCCESS') {
+        const getProductsResponse = await this.ecmProductRepo.find({
+          where: {
+            category: {
+              name: category,
+            },
+            status: 'ACTIVE',
+          },
+          relations: ['category'],
+        });
+
+        if (getProductsResponse.length > 0) {
+          return {
+            status: 'SUCCESS',
+            httpcode: HttpStatus.FOUND,
+            message: `Products Found for Category: ${category}`,
+            data: getProductsResponse,
+          };
+        } else {
+          return {
+            status: 'FAILURE',
+            httpcode: HttpStatus.NOT_FOUND,
+            message: `No Products Found for Category: ${category}`,
+            data: [],
+          };
+        }
+      } else {
+        return {
+          status: 'FAILURE',
+          httpcode: HttpStatus.NOT_FOUND,
+          message: 'Category Does Not Exist',
+          data: [],
+        };
+      }
+    } catch (err) {
       return {
         status: 'FAILURE',
         httpcode: HttpStatus.EXPECTATION_FAILED,

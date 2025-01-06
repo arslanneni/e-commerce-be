@@ -6,8 +6,10 @@ import {
   JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 import { EcmCategory } from '../../categories/entities/category.entity';
+import { EcmOrderItem } from 'src/order-items/entities/order-item.entity';
 
 @Entity('ecm_products')
 export class EcmProduct {
@@ -41,4 +43,7 @@ export class EcmProduct {
   @ManyToOne(() => EcmCategory, (ecmCategory) => ecmCategory.ecmProducts)
   @JoinColumn([{ name: 'category_id', referencedColumnName: 'id' }])
   category: EcmCategory;
+
+  @OneToMany(() => EcmOrderItem, (ecmOrderItem) => ecmOrderItem.ecmProducts)
+  ecmOrderItems: EcmOrderItem[];
 }
