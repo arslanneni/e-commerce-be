@@ -1,5 +1,14 @@
 import { EcmOrder } from 'src/orders/entities/order.entity';
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
+import { EcmUsersRoles } from './user_roles.entity';
+import { EcmCart } from 'src/cart/entities/cart.entity';
 
 @Entity('ecm_users')
 export class EcmUsers {
@@ -33,6 +42,16 @@ export class EcmUsers {
   @Column({ type: 'varchar', length: 15, nullable: true })
   status: string;
 
+  @Column({ type: 'int', nullable: true })
+  role_id: Number;
+
   @OneToMany(() => EcmOrder, (ecmOrder) => ecmOrder.ecmUsers)
   ecmOrder: EcmOrder[];
+
+  @OneToMany(() => EcmCart, (ecmCart) => ecmCart.ecmUserss)
+  ecmCartss: EcmCart[];
+
+  @ManyToOne(() => EcmUsersRoles, (ecmUsersRoles) => ecmUsersRoles.ecmUserss)
+  @JoinColumn([{ name: 'role_id', referencedColumnName: 'id' }])
+  ecmUsersRoless: EcmUsersRoles;
 }

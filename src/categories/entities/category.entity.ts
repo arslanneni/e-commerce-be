@@ -22,7 +22,7 @@ export class EcmCategory {
   datetime: Date;
 
   @UpdateDateColumn({ name: 'modified_datetime', type: 'timestamp' })
-  modifiedDatetime: Date;
+  modified_datetime: Date;
 
   @Column({ type: 'varchar', length: 15, nullable: true })
   status?: string;

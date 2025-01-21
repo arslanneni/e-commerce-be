@@ -63,6 +63,7 @@ export class CategoriesService {
         }
       }
     } catch (err) {
+      console.log(err);
       return {
         status: 'FAILURE',
         httpcode: HttpStatus.EXPECTATION_FAILED,
@@ -91,6 +92,7 @@ export class CategoriesService {
         };
       }
     } catch (err) {
+      console.log(err);
       return {
         status: 'FAILURE',
         httpcode: HttpStatus.EXPECTATION_FAILED,
@@ -229,6 +231,7 @@ export class CategoriesService {
         };
       }
     } catch (err) {
+      console.log(err);
       return {
         status: 'FAILURE',
         httpcode: HttpStatus.EXPECTATION_FAILED,

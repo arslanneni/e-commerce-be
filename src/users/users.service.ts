@@ -56,7 +56,9 @@ export class UsersService {
   }
   async getAllUsers() {
     try {
-      const getAllUsers = await this.ecmUsersRepo.find({});
+      const getAllUsers = await this.ecmUsersRepo.find({
+        relations: ['ecmUsersRoless'],
+      });
       if (getAllUsers.length > 0) {
         return {
           status: 'SUCCESS',
@@ -112,13 +114,15 @@ export class UsersService {
       };
     }
   }
-  async getUserByID(ID: number) {
+  async getUserByID(UserID: number) {
     try {
+      console.log(UserID, 'UserID');
       const getUsersData = await this.ecmUsersRepo.find({
         where: {
-          id: ID,
+          id: UserID,
         } as unknown,
       });
+      console.log(getUsersData, 'getUsersData');
       if (getUsersData.length > 0) {
         return {
           status: 'SUCCESS',

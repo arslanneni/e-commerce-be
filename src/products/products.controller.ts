@@ -15,6 +15,10 @@ export class ProductsController {
   getAllActiveProducts() {
     return this.productsService.getAllActiveProducts();
   }
+  @Get('getLatestProducts')
+  getLatestProducts() {
+    return this.productsService.getLatestProducts();
+  }
   @Get('getAllProducts')
   getAllProducts() {
     return this.productsService.getAllProducts();
@@ -25,6 +29,10 @@ export class ProductsController {
     @Body() updateProductDto: UpdateProductDto,
   ) {
     return this.productsService.updateProductByProductID(id, updateProductDto);
+  }
+  @Get('getProductDetailsByID/:id')
+  getProductDetailsByID(@Param('id') id: number) {
+    return this.productsService.getProductDetailsByID(id);
   }
 
   @Put('deleteProductByID/:id')

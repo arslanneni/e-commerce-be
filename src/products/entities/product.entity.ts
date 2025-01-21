@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { EcmCategory } from '../../categories/entities/category.entity';
 import { EcmOrderItem } from 'src/order-items/entities/order-item.entity';
+import { EcmCart } from 'src/cart/entities/cart.entity';
 
 @Entity('ecm_products')
 export class EcmProduct {
@@ -40,10 +41,16 @@ export class EcmProduct {
   @Column({ type: 'varchar', length: 15, nullable: true })
   status?: string;
 
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  image_url?: string;
+
   @ManyToOne(() => EcmCategory, (ecmCategory) => ecmCategory.ecmProducts)
   @JoinColumn([{ name: 'category_id', referencedColumnName: 'id' }])
   category: EcmCategory;
 
   @OneToMany(() => EcmOrderItem, (ecmOrderItem) => ecmOrderItem.ecmProducts)
   ecmOrderItems: EcmOrderItem[];
+
+  @OneToMany(() => EcmCart, (ecmCart) => ecmCart.ecmProducts)
+  ecmCartss: EcmCart[];
 }

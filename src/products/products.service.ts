@@ -28,17 +28,23 @@ export class ProductsService {
 
   async createProduct(createProductDto: CreateProductDto) {
     try {
+      // Check if the product already exists by name
       const isProductAlrExists = await this.getProductByName(
         createProductDto.name,
       );
+
       if (isProductAlrExists.status !== 'SUCCESS') {
+        // Create the product object without hardcoding the ID
         const saveObj = {
           ...createProductDto,
           datetime: new Date(),
           modified_datetime: null,
           status: 'ACTIVE',
         };
+
+        // Save the product in the repository
         const response = await this.ecmProductRepo.save(saveObj);
+
         if (response) {
           return {
             status: 'SUCCESS',
@@ -50,7 +56,7 @@ export class ProductsService {
           return {
             status: 'FAILURE',
             httpcode: HttpStatus.CONFLICT,
-            message: 'Product Does Not Created',
+            message: 'Product Not Created',
             data: [],
           };
         }
@@ -63,6 +69,7 @@ export class ProductsService {
         };
       }
     } catch (err) {
+      console.error(err);
       return {
         status: 'FAILURE',
         httpcode: HttpStatus.EXPECTATION_FAILED,
@@ -71,6 +78,7 @@ export class ProductsService {
       };
     }
   }
+
   async getProductByName(productName: string) {
     try {
       const getProduct = await this.ecmProductRepo.find({
@@ -104,7 +112,12 @@ export class ProductsService {
   }
   async getAllProducts() {
     try {
-      const getProduct = await this.ecmProductRepo.find();
+      const getProduct = await this.ecmProductRepo.find({
+        order: {
+          datetime: 'DESC',
+        },
+        relations: ['category'],
+      });
       if (getProduct.length > 0) {
         return {
           status: 'SUCCESS',
@@ -132,6 +145,7 @@ export class ProductsService {
   async getAllActiveProducts() {
     try {
       const getProduct = await this.ecmProductRepo.find({
+        relations: ['category'],
         where: {
           status: 'ACTIVE',
         },
@@ -161,6 +175,43 @@ export class ProductsService {
       };
     }
   }
+  async getLatestProducts() {
+    try {
+      const getProduct = await this.ecmProductRepo.find({
+        where: {
+          status: 'ACTIVE',
+        },
+        order: {
+          datetime: 'DESC',
+        },
+        take: 10,
+      });
+      if (getProduct.length > 0) {
+        return {
+          status: 'SUCCESS',
+          httpcode: HttpStatus.FOUND,
+          message: 'Product Details Found',
+          data: getProduct,
+        };
+      } else {
+        return {
+          status: 'FAILURE',
+          httpcode: HttpStatus.NOT_FOUND,
+          message: 'No Product Details Found',
+          data: [],
+        };
+      }
+    } catch (err) {
+      console.log(err);
+      return {
+        status: 'FAILURE',
+        httpcode: HttpStatus.EXPECTATION_FAILED,
+        message: 'EXCEPTION OCCURRED',
+        data: [],
+      };
+    }
+  }
+
   async updateProductByProductID(
     id: number,
     updateProductDto: UpdateProductDto,
@@ -348,6 +399,79 @@ export class ProductsService {
           status: 'FAILURE',
           httpcode: HttpStatus.NOT_FOUND,
           message: 'Category Does Not Exist',
+          data: [],
+        };
+      }
+    } catch (err) {
+      return {
+        status: 'FAILURE',
+        httpcode: HttpStatus.EXPECTATION_FAILED,
+        message: 'EXCEPTION OCCURRED',
+        data: [],
+      };
+    }
+  }
+  async getProductDetailsByID(id: number) {
+    try {
+      const productResponse = await this.isProductIDExits(id);
+      if (productResponse.status === 'SUCCESS') {
+        const isProductDetailsResponse = await this.ecmProductRepo.find({
+          relations: ['category'],
+          where: {
+            id: id,
+          },
+        });
+        if (isProductDetailsResponse.length > 0) {
+          return {
+            status: 'SUCCESS',
+            httpcode: HttpStatus.FOUND,
+            message: 'Product Details Found',
+            data: isProductDetailsResponse,
+          };
+        } else {
+          return {
+            status: 'FAILURE',
+            httpcode: HttpStatus.NOT_FOUND,
+            message: 'No Product Details Found',
+            data: [],
+          };
+        }
+      } else {
+        return {
+          status: 'FAILURE',
+          httpcode: HttpStatus.NOT_FOUND,
+          message: 'Product Does Not Exists',
+          data: [],
+        };
+      }
+    } catch (err) {
+      return {
+        status: 'FAILURE',
+        httpcode: HttpStatus.EXPECTATION_FAILED,
+        message: 'EXCEPTION OCCURRED',
+        data: [],
+      };
+    }
+  }
+  async isProductIDExits(id: number) {
+    try {
+      const isProductExists = await this.ecmProductRepo.find({
+        where: {
+          id: id,
+        },
+      });
+      if (isProductExists.length > 0) {
+        return {
+          status: 'SUCCESS',
+          httpcode: HttpStatus.FOUND,
+          message: 'Product Found',
+          data: isProductExists,
+        };
+      } else {
+        return {
+          status: 'FAILURE',
+          httpcode: HttpStatus.NOT_FOUND,
+          message: 'Product Does Not Exists',
           data: [],
         };
       }

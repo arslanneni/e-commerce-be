@@ -79,7 +79,7 @@ export class AuthService {
     const { email, password } = loginAuthDto;
 
     const user = await this.userServiceRepo.isUserAlrExists(email);
-    console.log(user);
+
     if (
       user &&
       user['status'] === 'SUCCESS' &&
