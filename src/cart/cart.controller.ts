@@ -43,4 +43,11 @@ export class CartController {
   async deleteCart(@Param('cartId') cartId: number) {
     return this.cartService.deleteCart(cartId);
   }
+  @Get('getCartByProduct/:userId/:productId')
+  async getCartByProduct(
+    @Param('userId') userId: number,
+    @Param('productId') productId: number,
+  ) {
+    return this.cartService.getCartByProduct(userId, productId);
+  }
 }

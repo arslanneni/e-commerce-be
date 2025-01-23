@@ -256,4 +256,28 @@ export class CartService {
       };
     }
   }
+  async getCartByProduct(userId: number, productId: number) {
+    const cart = await this.ecmCartRepo.findOne({
+      where: {
+        ecmUserss: { id: userId },
+        ecmProducts: { id: productId },
+      },
+    });
+
+    if (!cart) {
+      return {
+        status: 'FAILURE',
+        httpcode: HttpStatus.NOT_FOUND,
+        message: 'Product Not Added In Cart',
+        data: [],
+      };
+    }
+
+    return {
+      status: 'SUCCESS',
+      httpcode: HttpStatus.OK,
+      message: 'Cart Found',
+      data: cart,
+    };
+  }
 }
