@@ -1,7 +1,16 @@
-import { Controller, Get, Post, Body, Param, Put } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { AuthGuard } from 'src/guards/auth.guard';
 
 @Controller('products')
 export class ProductsController {
@@ -15,6 +24,7 @@ export class ProductsController {
   getAllActiveProducts() {
     return this.productsService.getAllActiveProducts();
   }
+  @UseGuards(AuthGuard)
   @Get('getLatestProducts')
   getLatestProducts() {
     return this.productsService.getLatestProducts();

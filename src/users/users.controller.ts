@@ -17,7 +17,7 @@ import { AuthGuard } from 'src/guards/auth.guard';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  //@UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @Get('getAllActiveUsers')
   getAllActiveUsers() {
     return this.usersService.getAllActiveUsers();
