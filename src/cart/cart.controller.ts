@@ -38,6 +38,10 @@ export class CartController {
   ) {
     return this.cartService.updateCart(cartId, newQuantity);
   }
+  @Put('updateCartStatusByUserID/:userID')
+  async updateCartStatusByUserID(@Param('userID') userID: number) {
+    return this.cartService.updateCartStatusByUserID(userID);
+  }
 
   @Delete('deleteCartItem/:cartId')
   async deleteCart(@Param('cartId') cartId: number) {

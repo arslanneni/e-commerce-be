@@ -8,7 +8,7 @@ import {
 
 export class CreateOrderDto {
   @IsNotEmpty()
-  @IsInt()
+  @IsNumber()
   user_id: number;
 
   @IsNotEmpty()

@@ -90,6 +90,7 @@ export class CartService {
           ecmUserss: {
             id: UserID,
           },
+          status: 'Active',
         },
       });
 
@@ -124,6 +125,7 @@ export class CartService {
         where: {
           product_id: createCartDto.product_id,
           user_id: createCartDto.user_id,
+          status: 'Active',
         },
       });
 
@@ -143,7 +145,13 @@ export class CartService {
             createCartDto.product_id,
           );
           if (productExists.status === 'SUCCESS') {
-            const saveResponse = await this.ecmCartRepo.save(createCartDto);
+            const saveObj = {
+              ...createCartDto,
+              status: 'Active',
+            };
+            const saveResponse = await this.ecmCartRepo.save(
+              saveObj as unknown,
+            );
             if (saveResponse) {
               return {
                 status: 'SUCCESS',
@@ -279,5 +287,22 @@ export class CartService {
       message: 'Cart Found',
       data: cart,
     };
+  }
+  async updateCartStatusByUserID(userId: number) {
+    try {
+      const isCartItemsExists = await this.ecmCartRepo.find({
+        where: { user_id: userId },
+      });
+
+      if (isCartItemsExists.length > 0) {
+        await this.ecmCartRepo.update(
+          { user_id: userId }, // Condition
+          { status: 'Done' } as unknown, // Updated values
+        );
+      }
+    } catch (err) {
+      console.error('Error updating cart status:', err);
+      throw new Error('Failed to update cart status');
+    }
   }
 }

@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { EcmUsersRoles } from './user_roles.entity';
 import { EcmCart } from 'src/cart/entities/cart.entity';
+import { EcmShipping } from 'src/shipping/entities/shipping.entity';
 
 @Entity('ecm_users')
 export class EcmUsers {
@@ -50,6 +51,9 @@ export class EcmUsers {
 
   @OneToMany(() => EcmCart, (ecmCart) => ecmCart.ecmUserss)
   ecmCartss: EcmCart[];
+
+  @OneToMany(() => EcmShipping, (ecmShipping) => ecmShipping.ecmUserss)
+  ecmShippings: EcmShipping[];
 
   @ManyToOne(() => EcmUsersRoles, (ecmUsersRoles) => ecmUsersRoles.ecmUserss)
   @JoinColumn([{ name: 'role_id', referencedColumnName: 'id' }])

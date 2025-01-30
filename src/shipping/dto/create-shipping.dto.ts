@@ -1,42 +1,43 @@
 import {
   IsNotEmpty,
   IsString,
-  IsInt,
-  IsNumber,
   MaxLength,
-  IsArray,
-  ValidateNested,
+  IsPostalCode,
+  IsNumber,
 } from 'class-validator';
-import { ProductDto } from './product-dto';
-import { Type } from 'class-transformer';
 
-export class CreateOrderItemsDto {
+export class CreateShippingDto {
   @IsNotEmpty()
   @IsNumber()
-  user_id: number;
-
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => ProductDto)
-  products: ProductDto[];
+  @MaxLength(255)
+  order_id: number;
 
   @IsNotEmpty()
   @IsString()
+  @MaxLength(255)
   country: string;
 
   @IsNotEmpty()
   @IsString()
+  @MaxLength(255)
   city: string;
 
   @IsNotEmpty()
   @IsString()
+  @MaxLength(255)
   state: string;
 
   @IsNotEmpty()
   @IsString()
+  postalcode: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @MaxLength(500)
   address: string;
 
   @IsNotEmpty()
   @IsNumber()
-  postalcode: string;
+  @MaxLength(255)
+  user_id: number;
 }

@@ -1,4 +1,5 @@
 import { EcmOrderItem } from 'src/order-items/entities/order-item.entity';
+import { EcmShipping } from 'src/shipping/entities/shipping.entity';
 import { EcmUsers } from 'src/users/entities/user.entity';
 import {
   Entity,
@@ -15,6 +16,9 @@ import {
 export class EcmOrder {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column({ type: 'int', nullable: false })
+  user_id: number;
 
   @Column({ type: 'varchar', length: 50, nullable: false })
   order_status: string;
@@ -34,4 +38,7 @@ export class EcmOrder {
 
   @OneToMany(() => EcmOrderItem, (ecmOrderItem) => ecmOrderItem.ecmOrders)
   ecmOrderItems: EcmOrderItem[];
+
+  @OneToMany(() => EcmShipping, (ecmShipping) => ecmShipping.ecmOrderr)
+  ecmShippings: EcmShipping[];
 }

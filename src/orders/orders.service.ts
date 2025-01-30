@@ -1,6 +1,5 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { UpdateOrderDto } from './dto/update-order.dto';
 import { EcmOrder } from './entities/order.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -141,12 +140,12 @@ export class OrdersService {
   }
   async createdOrder(createOrderDto: CreateOrderDto) {
     try {
-      console.log(createOrderDto);
       const isUserIDExists = await this.usersService.getUserByID(
         createOrderDto.user_id,
       );
       if (isUserIDExists.status === 'SUCCESS') {
         const saveObj = {
+          ...createOrderDto,
           order_date: new Date(),
           modified_datetime: null,
         };
@@ -176,6 +175,76 @@ export class OrdersService {
       }
     } catch (err) {
       console.log(err);
+      return {
+        status: 'FAILURE',
+        httpcode: HttpStatus.EXPECTATION_FAILED,
+        message: 'EXCEPTION OCCURRED',
+        data: [],
+      };
+    }
+  }
+  async getOrderByOrderID(id: number) {
+    try {
+      const isOrderExists = await this.ecmOrderRepo.find({
+        where: {
+          id: id,
+        },
+        order: {
+          order_date: 'DESC',
+        },
+      });
+
+      if (isOrderExists.length > 0) {
+        return {
+          status: 'SUCCESS',
+          httpcode: HttpStatus.FOUND,
+          message: 'Order Exists',
+          data: isOrderExists,
+        };
+      } else {
+        return {
+          status: 'FAILURE',
+          httpcode: HttpStatus.NOT_FOUND,
+          message: 'No Order Found',
+          data: [],
+        };
+      }
+    } catch (err) {
+      return {
+        status: 'FAILURE',
+        httpcode: HttpStatus.EXPECTATION_FAILED,
+        message: 'EXCEPTION OCCURRED',
+        data: [],
+      };
+    }
+  }
+  async getOrderByUSERID(userID: number) {
+    try {
+      const isOrderExists = await this.ecmOrderRepo.find({
+        where: {
+          user_id: userID,
+        },
+        order: {
+          order_date: 'DESC',
+        },
+      });
+
+      if (isOrderExists.length > 0) {
+        return {
+          status: 'SUCCESS',
+          httpcode: HttpStatus.FOUND,
+          message: 'Order Exists',
+          data: isOrderExists,
+        };
+      } else {
+        return {
+          status: 'FAILURE',
+          httpcode: HttpStatus.NOT_FOUND,
+          message: 'No Order Found',
+          data: [],
+        };
+      }
+    } catch (err) {
       return {
         status: 'FAILURE',
         httpcode: HttpStatus.EXPECTATION_FAILED,

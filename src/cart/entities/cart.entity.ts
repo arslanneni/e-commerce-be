@@ -16,6 +16,9 @@ export class EcmCart {
   @Column({ name: 'user_id', type: 'int', nullable: false })
   user_id: number;
 
+  @Column({ name: 'status', type: 'varchar', nullable: false })
+  status: string;
+
   @Column({ name: 'product_id', type: 'int', nullable: false })
   product_id: number;
 
